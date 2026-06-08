@@ -1332,7 +1332,7 @@ def prosumer_page(df: pd.DataFrame, price_col: str, user_meta: dict, snap: pd.Ti
             unsafe_allow_html=True,
         )
 
-                reference_price = float(URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL)
+        reference_price = float(URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL)
 
         st.markdown(
             f"""
