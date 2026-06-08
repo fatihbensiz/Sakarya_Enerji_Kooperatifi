@@ -1332,17 +1332,17 @@ def prosumer_page(df: pd.DataFrame, price_col: str, user_meta: dict, snap: pd.Ti
             unsafe_allow_html=True,
         )
 
-        reference_price = float(URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL)
+                reference_price = float(URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL)
 
-st.markdown(
-    f"""
-    <div class="note-card">
-        <strong>Şebekeye Veriş Gelir Referansı:</strong> {reference_price:.2f} ₺/kWh<br>
-        Bu değer Sanayi (OG) aktif enerji bedeli referansı olarak sabit alınmıştır.
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+        st.markdown(
+            f"""
+            <div class="note-card">
+                <strong>Şebekeye Veriş Gelir Referansı:</strong> {reference_price:.2f} ₺/kWh<br>
+                Bu değer Sanayi (OG) aktif enerji bedeli referansı olarak sabit alınmıştır.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
         reference_income = coop_energy * reference_price if reference_price > 0 else 0.0
         additional_gain = p2p_income - reference_income if reference_price > 0 else None
