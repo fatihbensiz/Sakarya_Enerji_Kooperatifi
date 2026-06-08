@@ -83,6 +83,42 @@ HARDWARE_SPECS = {
 # ─────────────────────────────────────────────
 st.markdown(
     """
+/* Sidebar aç/kapat okunu kesin siyah yap — Streamlit Cloud uyumlu */
+[data-testid="collapsedControl"],
+[data-testid="collapsedControl"] *,
+button[aria-label*="sidebar"],
+button[aria-label*="Sidebar"],
+button[title*="sidebar"],
+button[title*="Sidebar"] {
+    color: #111827 !important;
+    fill: #111827 !important;
+    stroke: #111827 !important;
+    opacity: 1 !important;
+}
+
+[data-testid="collapsedControl"] button,
+[data-testid="collapsedControl"] button *,
+[data-testid="collapsedControl"] svg,
+[data-testid="collapsedControl"] svg *,
+[data-testid="collapsedControl"] path,
+button[aria-label*="sidebar"] svg,
+button[aria-label*="Sidebar"] svg,
+button[title*="sidebar"] svg,
+button[title*="Sidebar"] svg {
+    color: #111827 !important;
+    fill: #111827 !important;
+    stroke: #111827 !important;
+    opacity: 1 !important;
+    filter: brightness(0) saturate(100%) !important;
+}
+
+/* Okun arka planını daha belirgin yap */
+[data-testid="collapsedControl"] {
+    background-color: #ffffff !important;
+    border: 1.5px solid #111827 !important;
+    border-radius: 999px !important;
+    box-shadow: 0 4px 14px rgba(17, 24, 39, 0.22) !important;
+}
 <style>
 #MainMenu { visibility: hidden !important; }
 footer { visibility: hidden !important; }
