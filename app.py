@@ -83,6 +83,8 @@ HARDWARE_SPECS = {
 # ─────────────────────────────────────────────
 st.markdown(
     """
+.stDataFrame { border-radius: 14px !important; }
+
 /* Sidebar aç/kapat okunu kesin siyah yap — Streamlit Cloud uyumlu */
 [data-testid="collapsedControl"],
 [data-testid="collapsedControl"] *,
@@ -112,7 +114,6 @@ button[title*="Sidebar"] svg {
     filter: brightness(0) saturate(100%) !important;
 }
 
-/* Okun arka planını daha belirgin yap */
 [data-testid="collapsedControl"] {
     background-color: #ffffff !important;
     border: 1.5px solid #111827 !important;
