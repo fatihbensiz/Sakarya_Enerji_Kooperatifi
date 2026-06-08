@@ -122,24 +122,53 @@ button[data-testid="baseButton-headerNoPadding"] {
     padding: 0.25rem !important;
 }
 
-/* Sidebar aç/kapat ikonunu siyah yap */
+/* Streamlit sidebar aç/kapat butonu — kesin görünür ve koyu ikon */
+header[data-testid="stHeader"] button,
+header[data-testid="stHeader"] button *,
+header[data-testid="stHeader"] svg,
+header[data-testid="stHeader"] svg *,
+header[data-testid="stHeader"] path,
+header[data-testid="stHeader"] line,
+header[data-testid="stHeader"] polyline,
+header[data-testid="stHeader"] rect,
+header[data-testid="stHeader"] circle {
+    color: #111827 !important;
+    fill: #111827 !important;
+    stroke: #111827 !important;
+    opacity: 1 !important;
+}
+
+/* Header’daki ilk buton genelde sidebar aç/kapat butonudur */
+header[data-testid="stHeader"] button:first-of-type {
+    background-color: #ffffff !important;
+    border: 2px solid #111827 !important;
+    border-radius: 999px !important;
+    box-shadow: 0 4px 16px rgba(17, 24, 39, 0.28) !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+}
+
+/* Bazı Streamlit sürümlerinde collapsedControl ayrı gelir */
 [data-testid="collapsedControl"],
+[data-testid="collapsedControl"] button {
+    background-color: #ffffff !important;
+    border: 2px solid #111827 !important;
+    border-radius: 999px !important;
+    box-shadow: 0 4px 16px rgba(17, 24, 39, 0.28) !important;
+    color: #111827 !important;
+    fill: #111827 !important;
+    stroke: #111827 !important;
+    opacity: 1 !important;
+}
+
 [data-testid="collapsedControl"] *,
-[data-testid="collapsedControl"] button,
-[data-testid="collapsedControl"] button *,
 [data-testid="collapsedControl"] svg,
 [data-testid="collapsedControl"] svg *,
 [data-testid="collapsedControl"] path,
-button[kind="header"],
-button[kind="header"] *,
-button[kind="header"] svg,
-button[kind="header"] svg *,
-button[kind="header"] path,
-button[data-testid="baseButton-headerNoPadding"],
-button[data-testid="baseButton-headerNoPadding"] *,
-button[data-testid="baseButton-headerNoPadding"] svg,
-button[data-testid="baseButton-headerNoPadding"] svg *,
-button[data-testid="baseButton-headerNoPadding"] path {
+[data-testid="collapsedControl"] line,
+[data-testid="collapsedControl"] polyline,
+[data-testid="collapsedControl"] rect,
+[data-testid="collapsedControl"] circle {
     color: #111827 !important;
     fill: #111827 !important;
     stroke: #111827 !important;
