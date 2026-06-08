@@ -36,7 +36,7 @@ SEBEKE_ALIS_FIYATI_FALLBACK_TL = 4.930369
 
 # Üretici şebekeye satış bedeli tek bir EPDK tüketici tarifesinden türetilemez.
 # Bu nedenle finansal panelde manuel girilir. 0.0 = karşılaştırma yapılmaz.
-URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL = 0.0
+URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL = 2.91
 
 USD_TO_TL = 32.5
 
@@ -84,9 +84,37 @@ st.markdown(
     """
 <style>
 #MainMenu { visibility: hidden !important; }
-header[data-testid="stHeader"] { display: none !important; }
 footer { visibility: hidden !important; }
 .stDeployButton { display: none !important; }
+
+header[data-testid="stHeader"] {
+    display: block !important;
+    visibility: visible !important;
+    background: rgba(246, 250, 247, 0.92) !important;
+    backdrop-filter: blur(6px) !important;
+}
+
+button[kind="header"] {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+button[data-testid="baseButton-headerNoPadding"] {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+[data-testid="collapsedControl"] {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: fixed !important;
+    top: 0.75rem !important;
+    left: 0.75rem !important;
+    z-index: 999999 !important;
+}
 
 html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     background-color: #f6faf7 !important;
@@ -1304,15 +1332,17 @@ def prosumer_page(df: pd.DataFrame, price_col: str, user_meta: dict, snap: pd.Ti
             unsafe_allow_html=True,
         )
 
-        reference_price = st.number_input(
-            "Şebekeye satış referans bedeli (₺/kWh) — gerçek sözleşme/YEKDEM/mahsuplaşma bedeli biliniyorsa girin",
-            min_value=0.0,
-            value=float(URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL),
-            step=0.01,
-            format="%.4f",
-            key=f"producer_reference_price_{col_u}",
-            help="Bu değer EPDK tüketici alış tarifesi değildir. Tesisin lisanssız üretim statüsüne, mahsuplaşma yapısına ve ilgili görevli tedarik/market referansına göre ayrıca belirlenmelidir.",
-        )
+        reference_price = float(URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL)
+
+st.markdown(
+    f"""
+    <div class="note-card">
+        <strong>Şebekeye Veriş Gelir Referansı:</strong> {reference_price:.2f} ₺/kWh<br>
+        Bu değer Sanayi (OG) aktif enerji bedeli referansı olarak sabit alınmıştır.
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
         reference_income = coop_energy * reference_price if reference_price > 0 else 0.0
         additional_gain = p2p_income - reference_income if reference_price > 0 else None
