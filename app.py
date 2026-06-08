@@ -1,5 +1,5 @@
 # ============================================================
-# SAU ENERJİ KOOPERATİFİ — P2P ENERJİ TİCARET PANELİ
+# Sakarya Üniversitesi ENERJİ KOOPERATİFİ — P2P ENERJİ TİCARET PANELİ
 # app.py | v5.0 — Gerçek Veri + Revize Finansal Mantık
 # ============================================================
 
@@ -21,7 +21,7 @@ import streamlit as st
 # SAYFA AYARLARI
 # ─────────────────────────────────────────────
 st.set_page_config(
-    page_title="SAU Enerji Kooperatifi",
+    page_title="Sakarya Üniversitesi Enerji Kooperatifi",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -458,7 +458,7 @@ def load_data_cached(
     for frame in (tuketim, uretim, p2p):
         for col in frame.columns:
             if col != "Kampus_Modu":
-                frame[col] = pd.to_numeric(frame[col], errors="coerce")
+                frame[col] = pd.to_numeric(frame[col], errors="ignore")
 
     uretim_cols = [c for c in uretim.columns if c.startswith("Uretim_")]
     tuketim_cols = [c for c in tuketim.columns if c.startswith("Tuketim_") or c.startswith("Tuketici_")]
@@ -756,7 +756,7 @@ def sidebar_login(prosumer_users: dict[str, dict], consumer_users: dict[str, dic
             """
             <div style="text-align:center;padding:18px 0 22px 0;">
                 <div style="font-size:2.4rem;line-height:1;">⚡🌿</div>
-                <div style="font-size:1.12rem;font-weight:950;margin-top:9px;">SAU Enerji Kooperatifi</div>
+                <div style="font-size:1.12rem;font-weight:950;margin-top:9px;">Sakarya Üniversitesi Enerji Kooperatifi</div>
                 <div style="font-size:0.75rem;opacity:0.72;margin-top:5px;">P2P İzleme Platformu v5.0</div>
             </div>
             """,
@@ -1089,7 +1089,7 @@ def public_page(df: pd.DataFrame, price_col: str, snap: pd.Timestamp, grid_price
     st.markdown(
         """
         <div class="hero">
-            <div class="hero-title">⚡ SAU Enerji Kooperatifi</div>
+            <div class="hero-title">⚡ Sakarya Üniversitesi Enerji Kooperatifi</div>
             <div class="hero-subtitle">Merkezi İzleme ve P2P Enerji Ticaret Portalı</div>
         </div>
         """,
