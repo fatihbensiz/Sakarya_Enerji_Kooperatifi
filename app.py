@@ -1,5 +1,5 @@
 # ============================================================
-# Sakarya Üniversitesi ENERJİ KOOPERATİFİ — P2P ENERJİ TİCARET PANELİ
+# SAU ENERJİ KOOPERATİFİ — P2P ENERJİ TİCARET PANELİ
 # app.py | v5.0 — Gerçek Veri + Revize Finansal Mantık
 # ============================================================
 
@@ -12,7 +12,6 @@ import unicodedata
 import warnings
 from pathlib import Path
 from typing import Optional
-from zoneinfo import ZoneInfo
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -22,7 +21,7 @@ import streamlit as st
 # SAYFA AYARLARI
 # ─────────────────────────────────────────────
 st.set_page_config(
-    page_title="Sakarya Üniversitesi Enerji Kooperatifi",
+    page_title="SAU Enerji Kooperatifi",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -37,7 +36,7 @@ SEBEKE_ALIS_FIYATI_FALLBACK_TL = 4.930369
 
 # Üretici şebekeye satış bedeli tek bir EPDK tüketici tarifesinden türetilemez.
 # Bu nedenle finansal panelde manuel girilir. 0.0 = karşılaştırma yapılmaz.
-URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL = 2.91
+URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL = 0.0
 
 USD_TO_TL = 32.5
 
@@ -85,95 +84,9 @@ st.markdown(
     """
 <style>
 #MainMenu { visibility: hidden !important; }
+header[data-testid="stHeader"] { display: none !important; }
 footer { visibility: hidden !important; }
 .stDeployButton { display: none !important; }
-
-header[data-testid="stHeader"] {
-    display: block !important;
-    visibility: visible !important;
-    background: rgba(246, 250, 247, 0.92) !important;
-    backdrop-filter: blur(6px) !important;
-}
-
-button[kind="header"] {
-    display: inline-flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-button[data-testid="baseButton-headerNoPadding"] {
-    display: inline-flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-[data-testid="collapsedControl"] {
-    display: flex !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-    position: fixed !important;
-    top: 0.75rem !important;
-    left: 0.75rem !important;
-    z-index: 999999 !important;
-    background: #ffffff !important;
-    border: 1.5px solid #111827 !important;
-    border-radius: 999px !important;
-    box-shadow: 0 4px 14px rgba(17, 24, 39, 0.22) !important;
-    padding: 0.25rem !important;
-}
-
-/* Streamlit sidebar aç/kapat butonu — kesin görünür ve koyu ikon */
-header[data-testid="stHeader"] button,
-header[data-testid="stHeader"] button *,
-header[data-testid="stHeader"] svg,
-header[data-testid="stHeader"] svg *,
-header[data-testid="stHeader"] path,
-header[data-testid="stHeader"] line,
-header[data-testid="stHeader"] polyline,
-header[data-testid="stHeader"] rect,
-header[data-testid="stHeader"] circle {
-    color: #111827 !important;
-    fill: #111827 !important;
-    stroke: #111827 !important;
-    opacity: 1 !important;
-}
-
-/* Header’daki ilk buton genelde sidebar aç/kapat butonudur */
-header[data-testid="stHeader"] button:first-of-type {
-    background-color: #ffffff !important;
-    border: 2px solid #111827 !important;
-    border-radius: 999px !important;
-    box-shadow: 0 4px 16px rgba(17, 24, 39, 0.28) !important;
-    min-width: 38px !important;
-    min-height: 38px !important;
-}
-
-/* Bazı Streamlit sürümlerinde collapsedControl ayrı gelir */
-[data-testid="collapsedControl"],
-[data-testid="collapsedControl"] button {
-    background-color: #ffffff !important;
-    border: 2px solid #111827 !important;
-    border-radius: 999px !important;
-    box-shadow: 0 4px 16px rgba(17, 24, 39, 0.28) !important;
-    color: #111827 !important;
-    fill: #111827 !important;
-    stroke: #111827 !important;
-    opacity: 1 !important;
-}
-
-[data-testid="collapsedControl"] *,
-[data-testid="collapsedControl"] svg,
-[data-testid="collapsedControl"] svg *,
-[data-testid="collapsedControl"] path,
-[data-testid="collapsedControl"] line,
-[data-testid="collapsedControl"] polyline,
-[data-testid="collapsedControl"] rect,
-[data-testid="collapsedControl"] circle {
-    color: #111827 !important;
-    fill: #111827 !important;
-    stroke: #111827 !important;
-    opacity: 1 !important;
-}
 
 html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     background-color: #f6faf7 !important;
@@ -545,7 +458,7 @@ def load_data_cached(
     for frame in (tuketim, uretim, p2p):
         for col in frame.columns:
             if col != "Kampus_Modu":
-                frame[col] = pd.to_numeric(frame[col], errors="coerce")
+                frame[col] = pd.to_numeric(frame[col], errors="ignore")
 
     uretim_cols = [c for c in uretim.columns if c.startswith("Uretim_")]
     tuketim_cols = [c for c in tuketim.columns if c.startswith("Tuketim_") or c.startswith("Tuketici_")]
@@ -673,27 +586,15 @@ def authenticate(username: str, password: str, prosumer_users: dict[str, dict], 
 
 
 def snapshot_timestamp(df: pd.DataFrame) -> pd.Timestamp:
-    now = dt.datetime.now(ZoneInfo("Europe/Istanbul"))
+    now = dt.datetime.now()
     data_year = int(df.index.min().year)
-
     try:
-        target = pd.Timestamp(
-            year=data_year,
-            month=now.month,
-            day=now.day,
-            hour=now.hour,
-        )
+        target = pd.Timestamp(year=data_year, month=now.month, day=now.day, hour=now.hour)
     except ValueError:
-        target = pd.Timestamp(
-            year=data_year,
-            month=now.month,
-            day=28,
-            hour=now.hour,
-        )
+        target = pd.Timestamp(year=data_year, month=now.month, day=28, hour=now.hour)
 
     if target < df.index.min():
         target = df.index.min()
-
     if target > df.index.max():
         target = df.index.max()
 
@@ -855,7 +756,7 @@ def sidebar_login(prosumer_users: dict[str, dict], consumer_users: dict[str, dic
             """
             <div style="text-align:center;padding:18px 0 22px 0;">
                 <div style="font-size:2.4rem;line-height:1;">⚡🌿</div>
-                <div style="font-size:1.12rem;font-weight:950;margin-top:9px;">Sakarya Üniversitesi Enerji Kooperatifi</div>
+                <div style="font-size:1.12rem;font-weight:950;margin-top:9px;">SAU Enerji Kooperatifi</div>
                 <div style="font-size:0.75rem;opacity:0.72;margin-top:5px;">P2P İzleme Platformu v5.0</div>
             </div>
             """,
@@ -1188,7 +1089,7 @@ def public_page(df: pd.DataFrame, price_col: str, snap: pd.Timestamp, grid_price
     st.markdown(
         """
         <div class="hero">
-            <div class="hero-title">⚡ Sakarya Üniversitesi Enerji Kooperatifi</div>
+            <div class="hero-title">⚡ SAU Enerji Kooperatifi</div>
             <div class="hero-subtitle">Merkezi İzleme ve P2P Enerji Ticaret Portalı</div>
         </div>
         """,
@@ -1403,16 +1304,14 @@ def prosumer_page(df: pd.DataFrame, price_col: str, user_meta: dict, snap: pd.Ti
             unsafe_allow_html=True,
         )
 
-        reference_price = float(URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL)
-
-        st.markdown(
-            f"""
-            <div class="note-card">
-                <strong>Şebekeye Veriş Gelir Referansı:</strong> {reference_price:.2f} ₺/kWh<br>
-                Bu değer Sanayi (OG) aktif enerji bedeli referansı olarak sabit alınmıştır.
-            </div>
-            """,
-            unsafe_allow_html=True,
+        reference_price = st.number_input(
+            "Şebekeye satış referans bedeli (₺/kWh) — gerçek sözleşme/YEKDEM/mahsuplaşma bedeli biliniyorsa girin",
+            min_value=0.0,
+            value=float(URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL),
+            step=0.01,
+            format="%.4f",
+            key=f"producer_reference_price_{col_u}",
+            help="Bu değer EPDK tüketici alış tarifesi değildir. Tesisin lisanssız üretim statüsüne, mahsuplaşma yapısına ve ilgili görevli tedarik/market referansına göre ayrıca belirlenmelidir.",
         )
 
         reference_income = coop_energy * reference_price if reference_price > 0 else 0.0
