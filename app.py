@@ -458,7 +458,7 @@ def load_data_cached(
     for frame in (tuketim, uretim, p2p):
         for col in frame.columns:
             if col != "Kampus_Modu":
-                frame[col] = pd.to_numeric(frame[col], errors="coerce")
+                frame[col] = pd.to_numeric(frame[col], errors="ignore")
 
     uretim_cols = [c for c in uretim.columns if c.startswith("Uretim_")]
     tuketim_cols = [c for c in tuketim.columns if c.startswith("Tuketim_") or c.startswith("Tuketici_")]
