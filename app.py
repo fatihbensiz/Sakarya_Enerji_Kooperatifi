@@ -83,43 +83,6 @@ HARDWARE_SPECS = {
 # ─────────────────────────────────────────────
 st.markdown(
     """
-.stDataFrame { border-radius: 14px !important; }
-
-/* Sidebar aç/kapat okunu kesin siyah yap — Streamlit Cloud uyumlu */
-[data-testid="collapsedControl"],
-[data-testid="collapsedControl"] *,
-button[aria-label*="sidebar"],
-button[aria-label*="Sidebar"],
-button[title*="sidebar"],
-button[title*="Sidebar"] {
-    color: #111827 !important;
-    fill: #111827 !important;
-    stroke: #111827 !important;
-    opacity: 1 !important;
-}
-
-[data-testid="collapsedControl"] button,
-[data-testid="collapsedControl"] button *,
-[data-testid="collapsedControl"] svg,
-[data-testid="collapsedControl"] svg *,
-[data-testid="collapsedControl"] path,
-button[aria-label*="sidebar"] svg,
-button[aria-label*="Sidebar"] svg,
-button[title*="sidebar"] svg,
-button[title*="Sidebar"] svg {
-    color: #111827 !important;
-    fill: #111827 !important;
-    stroke: #111827 !important;
-    opacity: 1 !important;
-    filter: brightness(0) saturate(100%) !important;
-}
-
-[data-testid="collapsedControl"] {
-    background-color: #ffffff !important;
-    border: 1.5px solid #111827 !important;
-    border-radius: 999px !important;
-    box-shadow: 0 4px 14px rgba(17, 24, 39, 0.22) !important;
-}
 <style>
 #MainMenu { visibility: hidden !important; }
 footer { visibility: hidden !important; }
@@ -152,23 +115,31 @@ button[data-testid="baseButton-headerNoPadding"] {
     top: 0.75rem !important;
     left: 0.75rem !important;
     z-index: 999999 !important;
-    background: rgba(255, 255, 255, 0.96) !important;
-    border: 1px solid rgba(17, 24, 39, 0.22) !important;
+    background: #ffffff !important;
+    border: 1.5px solid #111827 !important;
     border-radius: 999px !important;
-    box-shadow: 0 4px 14px rgba(17, 24, 39, 0.18) !important;
+    box-shadow: 0 4px 14px rgba(17, 24, 39, 0.22) !important;
     padding: 0.25rem !important;
 }
 
 /* Sidebar aç/kapat ikonunu siyah yap */
+[data-testid="collapsedControl"],
+[data-testid="collapsedControl"] *,
 [data-testid="collapsedControl"] button,
+[data-testid="collapsedControl"] button *,
 [data-testid="collapsedControl"] svg,
-[data-testid="collapsedControl"] svg path,
+[data-testid="collapsedControl"] svg *,
+[data-testid="collapsedControl"] path,
 button[kind="header"],
+button[kind="header"] *,
 button[kind="header"] svg,
-button[kind="header"] svg path,
+button[kind="header"] svg *,
+button[kind="header"] path,
 button[data-testid="baseButton-headerNoPadding"],
+button[data-testid="baseButton-headerNoPadding"] *,
 button[data-testid="baseButton-headerNoPadding"] svg,
-button[data-testid="baseButton-headerNoPadding"] svg path {
+button[data-testid="baseButton-headerNoPadding"] svg *,
+button[data-testid="baseButton-headerNoPadding"] path {
     color: #111827 !important;
     fill: #111827 !important;
     stroke: #111827 !important;
