@@ -12,6 +12,7 @@ import unicodedata
 import warnings
 from pathlib import Path
 from typing import Optional
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -114,6 +115,27 @@ button[data-testid="baseButton-headerNoPadding"] {
     top: 0.75rem !important;
     left: 0.75rem !important;
     z-index: 999999 !important;
+    background: rgba(255, 255, 255, 0.96) !important;
+    border: 1px solid rgba(17, 24, 39, 0.22) !important;
+    border-radius: 999px !important;
+    box-shadow: 0 4px 14px rgba(17, 24, 39, 0.18) !important;
+    padding: 0.25rem !important;
+}
+
+/* Sidebar aç/kapat ikonunu siyah yap */
+[data-testid="collapsedControl"] button,
+[data-testid="collapsedControl"] svg,
+[data-testid="collapsedControl"] svg path,
+button[kind="header"],
+button[kind="header"] svg,
+button[kind="header"] svg path,
+button[data-testid="baseButton-headerNoPadding"],
+button[data-testid="baseButton-headerNoPadding"] svg,
+button[data-testid="baseButton-headerNoPadding"] svg path {
+    color: #111827 !important;
+    fill: #111827 !important;
+    stroke: #111827 !important;
+    opacity: 1 !important;
 }
 
 html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
@@ -614,15 +636,27 @@ def authenticate(username: str, password: str, prosumer_users: dict[str, dict], 
 
 
 def snapshot_timestamp(df: pd.DataFrame) -> pd.Timestamp:
-    now = dt.datetime.now()
+    now = dt.datetime.now(ZoneInfo("Europe/Istanbul"))
     data_year = int(df.index.min().year)
+
     try:
-        target = pd.Timestamp(year=data_year, month=now.month, day=now.day, hour=now.hour)
+        target = pd.Timestamp(
+            year=data_year,
+            month=now.month,
+            day=now.day,
+            hour=now.hour,
+        )
     except ValueError:
-        target = pd.Timestamp(year=data_year, month=now.month, day=28, hour=now.hour)
+        target = pd.Timestamp(
+            year=data_year,
+            month=now.month,
+            day=28,
+            hour=now.hour,
+        )
 
     if target < df.index.min():
         target = df.index.min()
+
     if target > df.index.max():
         target = df.index.max()
 
