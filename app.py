@@ -246,20 +246,27 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
 }
 .stDataFrame { border-radius: 14px !important; }
 
-/* Kapalı Paneli Açma Oku (Beyaz arka planda görünmesi için) */
 [data-testid="collapsedControl"] {
-    background-color: #ffffff !important;
-    border: 2px solid black !important;
-    border-radius: 5px !important;
+    background-color: transparent !important; /* İçini şeffaf bırakıyoruz */
+    border: 2px solid black !important; /* 2 piksel kalınlığında siyah çerçeve */
+    border-radius: 8px !important; /* Köşeleri yuvarlatılmış kare */
+    margin-left: 15px !important;
+    margin-top: 15px !important;
     z-index: 999999 !important;
     transition: all 0.3s ease;
 }
 
-/* Okun kendi çizgini zorla siyah yapıyoruz */
-[data-testid="collapsedControl"] svg {
+/* İçindeki ok Streamlit izin verirse siyah olsun diye ekliyoruz */
+[data-testid="collapsedControl"] svg,
+[data-testid="collapsedControl"] svg path {
     fill: black !important;
     stroke: black !important;
     color: black !important;
+}
+
+/* Fareyle üzerine gelince çok hafif grileşsin */
+[data-testid="collapsedControl"]:hover {
+    background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
 /* Açık Paneli Kapatma Oku (Yeşil arka planda kaybolmaması için) */
