@@ -246,18 +246,39 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
 }
 .stDataFrame { border-radius: 14px !important; }
 
+/* Kapalı Paneli Açma Oku (Beyaz arka planda görünmesi için) */
 [data-testid="collapsedControl"] {
-    color: black !important;
-    background-color: white !important;
-    border-radius: 5px !important;
+    background-color: #ffffff !important;
     border: 2px solid black !important;
+    border-radius: 5px !important;
     z-index: 999999 !important;
+    transition: all 0.3s ease;
+}
+
+/* Okun kendi çizgini zorla siyah yapıyoruz */
+[data-testid="collapsedControl"] svg {
+    fill: black !important;
+    stroke: black !important;
+    color: black !important;
+}
+
+/* Açık Paneli Kapatma Oku (Yeşil arka planda kaybolmaması için) */
+[data-testid="stSidebarCollapseButton"] svg {
+    fill: black !important;
+    stroke: black !important;
+    color: black !important;
+}
+
+/* Günlük / Haftalık / Aylık Radio Buton Yazıları */
+div[role="radiogroup"] p, div[role="radiogroup"] label {
+    color: black !important;
+    font-weight: 600 !important;
+    font-size: 15px !important;
 }
 </style>
 """,
     unsafe_allow_html=True,
 )
-
 # ─────────────────────────────────────────────
 # DOSYA VE VERİ YÜKLEME
 # ─────────────────────────────────────────────
