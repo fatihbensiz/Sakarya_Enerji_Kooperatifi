@@ -1,5 +1,5 @@
 # ============================================================
-# SAU ENERJİ KOOPERATİFİ — P2P ENERJİ TİCARET PANELİ
+# Sakarya Üniversitesi ENERJİ KOOPERATİFİ — P2P ENERJİ TİCARET PANELİ
 # app.py | v5.0 — Gerçek Veri + Revize Finansal Mantık
 # ============================================================
 
@@ -21,7 +21,7 @@ import streamlit as st
 # SAYFA AYARLARI
 # ─────────────────────────────────────────────
 st.set_page_config(
-    page_title="SAU Enerji Kooperatifi",
+    page_title="Sakarya Üniversitesi Enerji Kooperatifi",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -36,7 +36,7 @@ SEBEKE_ALIS_FIYATI_FALLBACK_TL = 4.930369
 
 # Üretici şebekeye satış bedeli tek bir EPDK tüketici tarifesinden türetilemez.
 # Bu nedenle finansal panelde manuel girilir. 0.0 = karşılaştırma yapılmaz.
-URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL = 0.0
+URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL = 2.91
 
 USD_TO_TL = 32.5
 
@@ -84,7 +84,7 @@ st.markdown(
     """
 <style>
 #MainMenu { visibility: hidden !important; }
-header[data-testid="stHeader"] { display: none !important; }
+header[data-testid="stHeader"] { background: transparent !important; }
 footer { visibility: hidden !important; }
 .stDeployButton { display: none !important; }
 
@@ -245,6 +245,14 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
     box-shadow: 0 5px 14px rgba(20,90,50,0.22) !important;
 }
 .stDataFrame { border-radius: 14px !important; }
+
+[data-testid="collapsedControl"] {
+    color: black !important;
+    background-color: white !important;
+    border-radius: 5px !important;
+    border: 2px solid black !important;
+    z-index: 999999 !important;
+}
 </style>
 """,
     unsafe_allow_html=True,
@@ -756,7 +764,7 @@ def sidebar_login(prosumer_users: dict[str, dict], consumer_users: dict[str, dic
             """
             <div style="text-align:center;padding:18px 0 22px 0;">
                 <div style="font-size:2.4rem;line-height:1;">⚡🌿</div>
-                <div style="font-size:1.12rem;font-weight:950;margin-top:9px;">SAU Enerji Kooperatifi</div>
+                <div style="font-size:1.12rem;font-weight:950;margin-top:9px;">Sakarya Üniversitesi Enerji Kooperatifi</div>
                 <div style="font-size:0.75rem;opacity:0.72;margin-top:5px;">P2P İzleme Platformu v5.0</div>
             </div>
             """,
@@ -836,9 +844,10 @@ def status_and_ticker(df: pd.DataFrame, price_col: str, snap: pd.Timestamp, grid
             <span>⏱️ Veri Saati: <b>{snap.strftime('%H:%M')}</b></span>
         </div>
         <div class="ticker-wrap">
-            <span class="ticker-item">📊 CANLI ENERJİ BORSASI</span>
-            <span class="ticker-item">🟢 Kooperatif P2P: <span class="ticker-green">{p2p_anlik:.4f} ₺/kWh</span></span>
-            <span class="ticker-item">🔴 EPDK Şebeke Alış: <span class="ticker-red">{grid_price_tl:.2f} ₺/kWh</span></span>
+            <span class="ticker-item">📊 ENERJİ BORSASI</span>
+            <span class="ticker-item">🟢 Kooperatif İçi: <span class="ticker-green">{p2p_anlik:.4f} ₺/kWh</span></span>
+            <span class="ticker-item">🔴 Şebeke Alış: <span class="ticker-red">{grid_price_tl:.2f} ₺/kWh</span></span>
+            <span class="ticker-item">🟡 Şebeke Satış: <b>2.91 ₺/kWh</b></span>
             <span class="ticker-item">⚡ Anlık Üretim: <span class="ticker-green">{current_prod:.2f} kWh</span></span>
             <span class="ticker-item">🏭 Prosümer: <b>10 bina</b></span>
         </div>
@@ -863,7 +872,7 @@ def chart_monthly_campus_balance(df: pd.DataFrame) -> go.Figure:
 
 
 def chart_price(df: pd.DataFrame, price_col: str, snap: pd.Timestamp, grid_price_tl: float) -> None:
-    section_header("💹 Kooperatif P2P Fiyatı ve EPDK Şebeke Referansı")
+    section_header("💹 Kooperatif İçi İşlem Fiyatı ve Şebeke Referansı")
     mode = st.radio(
         "Fiyat grafiği görünümü",
         ["Günlük", "Haftalık", "Aylık"],
@@ -883,7 +892,7 @@ def chart_price(df: pd.DataFrame, price_col: str, snap: pd.Timestamp, grid_price
         data = daily_slice(df, selected_day)
         x = data.index
         y = data[price_col]
-        title = "Günlük Saatlik P2P Fiyat Profili"
+        title = "Seçili Gün Saatlik Takas Fiyatı"
         x_title = "Saat"
         tickangle = -90
         dtick = 3600000
@@ -909,7 +918,7 @@ def chart_price(df: pd.DataFrame, price_col: str, snap: pd.Timestamp, grid_price
         daily_avg = data[price_col].resample("D").mean()
         x = [f"{TR_GUNLER_KISA[d.weekday()]}<br>{d.day} {TR_AYLAR[d.month]}" for d in daily_avg.index]
         y = daily_avg.values
-        title = "Haftalık Günlük Ortalama P2P Fiyatı"
+        title = "Seçili Hafta Günlük Ortalama Takas Fiyatı"
         x_title = "Gün"
         tickangle = 0
         dtick = None
@@ -918,7 +927,7 @@ def chart_price(df: pd.DataFrame, price_col: str, snap: pd.Timestamp, grid_price
         monthly = price_series(df, price_col, "ME")
         x = [TR_AYLAR[d.month] for d in monthly.index]
         y = monthly.values
-        title = "Aylık Ortalama P2P Fiyatı"
+        title = "Aylık Ortalama Takas Fiyatı"
         x_title = "Ay"
         tickangle = 0
         dtick = None
@@ -927,7 +936,7 @@ def chart_price(df: pd.DataFrame, price_col: str, snap: pd.Timestamp, grid_price
     fig.add_trace(go.Scatter(
         x=x,
         y=y,
-        name="Kooperatif P2P Fiyatı",
+        name="Kooperatif İçi Takas Fiyatı",
         mode="lines+markers",
         line=dict(color=RENK_URETIM, width=3),
         marker=dict(size=7),
@@ -936,11 +945,13 @@ def chart_price(df: pd.DataFrame, price_col: str, snap: pd.Timestamp, grid_price
         y=grid_price_tl,
         line_dash="dot",
         line_color=RENK_KIRMIZI,
-        annotation_text=f"EPDK Şebeke Alış {grid_price_tl:.2f} ₺/kWh",
+        annotation_text=f"Şebeke Alış {grid_price_tl:.2f} ₺/kWh",
         annotation_font_color=RENK_KIRMIZI,
     )
     fig.update_layout(**base_layout(title, height=405))
     style_axes(fig, x_title, "Fiyat (₺/kWh)", tickangle=tickangle, dtick=dtick)
+    if mode == "Günlük":
+        fig.update_layout(xaxis=dict(tickformat="%H:%M", tickmode="linear", dtick=3600000))
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -959,9 +970,9 @@ def chart_consumer_24h(df: pd.DataFrame, col_t: str) -> go.Figure:
 
 
 def chart_consumer_time_series(df: pd.DataFrame, col_t: str, snap: pd.Timestamp, bina_adi: str) -> None:
-    section_header(f"📅 {bina_adi} Tüketim Zaman Serisi")
+    section_header(f"📅 {bina_adi} Saatlik Tüketim Profili")
     mode = st.radio(
-        "Tüketim zaman serisi görünümü",
+        "Saatlik Tüketim Profili Görünümü",
         ["Günlük", "Haftalık", "Aylık"],
         horizontal=True,
         key=f"ts_mode_{col_t}",
@@ -979,8 +990,9 @@ def chart_consumer_time_series(df: pd.DataFrame, col_t: str, snap: pd.Timestamp,
         data = daily_slice(df, selected_day)
         fig = go.Figure()
         fig.add_trace(go.Bar(x=data.index, y=data[col_t], name="Tüketim", marker_color=RENK_TUKETIM))
-        fig.update_layout(**base_layout("Günlük Saatlik Tüketim", height=370))
+        fig.update_layout(**base_layout("Seçili Gün Saatlik Tüketim Profili", height=370))
         style_axes(fig, "Saat", "Enerji (kWh)", tickangle=-90, dtick=3600000)
+        fig.update_layout(xaxis=dict(tickformat="%H:%M", tickmode="linear", dtick=3600000))
 
     elif mode == "Haftalık":
         start_default = max(df.index.min().date(), (snap - pd.Timedelta(days=6)).date())
@@ -1004,7 +1016,7 @@ def chart_consumer_time_series(df: pd.DataFrame, col_t: str, snap: pd.Timestamp,
         x = [f"{TR_GUNLER_KISA[d.weekday()]}<br>{d.day} {TR_AYLAR[d.month]}" for d in weekly.index]
         fig = go.Figure()
         fig.add_trace(go.Bar(x=x, y=weekly.values, name="Günlük Toplam Tüketim", marker_color=RENK_TUKETIM))
-        fig.update_layout(**base_layout("Haftalık Tüketim — Günlük Toplamlar", height=370))
+        fig.update_layout(**base_layout("Seçili Hafta Günlük Tüketimi", height=370))
         style_axes(fig, "Gün", "Enerji (kWh)")
 
     else:
@@ -1019,7 +1031,7 @@ def chart_consumer_time_series(df: pd.DataFrame, col_t: str, snap: pd.Timestamp,
 
 
 def chart_prosumer_flow(df: pd.DataFrame, col_u: str, col_t: str, snap: pd.Timestamp, bina_adi: str) -> None:
-    section_header(f"📈 {bina_adi} Günlük Üretim-Tüketim Akışı")
+    section_header(f"📈 {bina_adi} Günlük Net Enerji Dengesi")
     selected_day = st.date_input(
         "Gün seçimi",
         value=snap.date(),
@@ -1035,6 +1047,7 @@ def chart_prosumer_flow(df: pd.DataFrame, col_u: str, col_t: str, snap: pd.Times
     fig.update_layout(**base_layout("Seçili Gün Saatlik Üretim ve Tüketim", height=410))
     fig.update_layout(barmode="group")
     style_axes(fig, "Saat", "Enerji (kWh)", tickangle=-90, dtick=3600000)
+    fig.update_layout(xaxis=dict(tickformat="%H:%M", tickmode="linear", dtick=3600000))
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -1059,6 +1072,7 @@ def chart_daily_pv_profile(df: pd.DataFrame, col_u: str, snap: pd.Timestamp, bin
     ))
     fig.update_layout(**base_layout("Seçili Gün Saatlik PV Üretimi", height=360))
     style_axes(fig, "Saat", "Üretim (kWh)", tickangle=-90, dtick=3600000)
+    fig.update_layout(xaxis=dict(tickformat="%H:%M", tickmode="linear", dtick=3600000))
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -1089,7 +1103,7 @@ def public_page(df: pd.DataFrame, price_col: str, snap: pd.Timestamp, grid_price
     st.markdown(
         """
         <div class="hero">
-            <div class="hero-title">⚡ SAU Enerji Kooperatifi</div>
+            <div class="hero-title">⚡ Sakarya Üniversitesi Enerji Kooperatifi</div>
             <div class="hero-subtitle">Merkezi İzleme ve P2P Enerji Ticaret Portalı</div>
         </div>
         """,
@@ -1196,17 +1210,16 @@ def consumer_page(df: pd.DataFrame, price_col: str, user_meta: dict, snap: pd.Ti
 
         with right:
             section_header("🧾 Veri Seti Özeti")
-            inferred_freq = pd.infer_freq(df.index) or "Saatlik"
             st.markdown(
                 f"""
                 <div class="hw-card">
                     <strong>Kayıt Sayısı:</strong> {len(df):,} saat<br>
                     <strong>İlk Veri:</strong> {df.index.min().strftime('%d.%m.%Y %H:%M')}<br>
                     <strong>Son Veri:</strong> {df.index.max().strftime('%d.%m.%Y %H:%M')}<br>
-                    <strong>Veri Frekansı:</strong> {safe(inferred_freq)}<br>
-                    <strong>P2P Fiyat Kolonu:</strong> {safe(price_col)}<br>
+                    <strong>Veri Sıklığı:</strong> Saatlik Agregasyon<br>
+                    <strong>Fiyat Verisi:</strong> Dinamik Saatlik Borsa Serisi<br>
                     <strong>Şebeke Alış Referansı:</strong> {grid_price_tl:.4f} ₺/kWh<br>
-                    <strong>Tarife Kaynağı:</strong> {safe(tariff['source'])}
+                    <strong>Referans Fiyat:</strong> Sabit Tanımlı 2.91 ₺/kWh<br>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -1293,26 +1306,7 @@ def prosumer_page(df: pd.DataFrame, price_col: str, user_meta: dict, snap: pd.Ti
         p2p_income = float(sales["P2P_Gelir"].sum())
         weighted_p2p_price = p2p_income / coop_energy if coop_energy > 0 else float(df[price_col].mean())
 
-        st.markdown(
-            """
-            <div class="note-card">
-                Bu bölüm, prosumer binanın kendi tüketimini karşıladıktan sonra kalan fazla üretimin
-                kooperatif üyeleriyle eşleşen kısmından elde ettiği satış gelirini gösterir. Öz tüketim gelir değil,
-                binanın kendi şebeke alımını azaltan enerji olarak değerlendirilir.
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        reference_price = st.number_input(
-            "Şebekeye satış referans bedeli (₺/kWh) — gerçek sözleşme/YEKDEM/mahsuplaşma bedeli biliniyorsa girin",
-            min_value=0.0,
-            value=float(URETICI_SEBEKE_SATIS_REFERANS_VARSAYILAN_TL),
-            step=0.01,
-            format="%.4f",
-            key=f"producer_reference_price_{col_u}",
-            help="Bu değer EPDK tüketici alış tarifesi değildir. Tesisin lisanssız üretim statüsüne, mahsuplaşma yapısına ve ilgili görevli tedarik/market referansına göre ayrıca belirlenmelidir.",
-        )
+        reference_price = 2.91
 
         reference_income = coop_energy * reference_price if reference_price > 0 else 0.0
         additional_gain = p2p_income - reference_income if reference_price > 0 else None
@@ -1372,9 +1366,8 @@ def prosumer_page(df: pd.DataFrame, price_col: str, user_meta: dict, snap: pd.Ti
             st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
 
     with tab3:
-        left, right = st.columns([1, 1])
-        with left:
-            section_header("⚙️ PVsyst Sistem Parametreleri")
+            # 1. SATIR: GES Tesis Parametreleri
+            section_header("⚙️ GES Tesis Parametreleri")
             st.markdown(
                 f"""
                 <div class="hw-card">
@@ -1385,16 +1378,27 @@ def prosumer_page(df: pd.DataFrame, price_col: str, user_meta: dict, snap: pd.Ti
                     <strong>Performans Oranı:</strong> {user_meta['pr']}%<br>
                     <strong>Veri Kolonu:</strong> {safe(col_u)}
                 </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+            # 2. SATIR: PV Modül Özellikleri
+            section_header("🔲 PV Modül Özellikleri")
+            st.markdown(
+                f"""
                 <div class="hw-card">
-                    <strong>Panel:</strong> {safe(HARDWARE_SPECS['panel'])}<br>
-                    <strong>İnverter:</strong> {safe(HARDWARE_SPECS['inverter'])}
+                    <strong>Modül:</strong> {safe(HARDWARE_SPECS['panel'])}<br>
+                    <strong>Teknoloji:</strong> Çift Yüzeyli (Bifacial) Monokristal<br>
+                    <strong>Arka Yüzey Kazancı (Bifaciality):</strong> %70 ± 5<br>
+                    <strong>IAM (Işınım Açısı) Etkisi:</strong> Simülasyona Dahil<br>
+                    <strong>Sıcaklık Katsayısı (Pmax):</strong> -0.34 %/°C
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
 
-        with right:
-            section_header("🔌 İnverter Durumu")
+            # 3. SATIR: Evirici (İnverter) Özellikleri
+            section_header("🔌 Evirici (İnverter) Özellikleri")
             current_prod = float(df.loc[snap, col_u])
             capacity_factor = current_prod / kwp * 100 if kwp else 0
             producer_fee_1 = tariff.get("producer_distribution_fee_lu1_tl")
@@ -1407,6 +1411,7 @@ def prosumer_page(df: pd.DataFrame, price_col: str, user_meta: dict, snap: pd.Ti
                 if producer_fee_2 is not None:
                     parts.append(f"LÜ2: {producer_fee_2:.4f} ₺/kWh")
                 fee_text = " | ".join(parts)
+            
             st.markdown(
                 f"""
                 <div class="hw-card">
@@ -1415,13 +1420,12 @@ def prosumer_page(df: pd.DataFrame, price_col: str, user_meta: dict, snap: pd.Ti
                     <strong>MPPT Aralığı:</strong> 200–1000 V<br>
                     <strong>Soğutma:</strong> Akıllı fan + doğal konveksiyon<br>
                     <strong>Anlık Üretim:</strong> {current_prod:.2f} kWh<br>
-                    <strong>Anlık Kapasite Kullanımı:</strong> {capacity_factor:.1f}%<br>
-                    <strong>Veriş Yönlü Dağıtım Bedeli:</strong> {safe(fee_text)}
+                    <strong>Kapasite Faktörü:</strong> %{capacity_factor:.1f}<br>
+                    <strong>Dağıtım Bedeli:</strong> {fee_text}
                 </div>
                 """,
                 unsafe_allow_html=True,
             )
-
 
 def admin_page(df: pd.DataFrame, price_col: str, prosumer_users: dict[str, dict], grid_price_tl: float) -> None:
     st.markdown(
