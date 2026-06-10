@@ -1514,7 +1514,20 @@ except Exception as exc:
 
 price_col = get_price_col(df)
 grid_price_tl = float(tariff["consumer_grid_price_tl"])
-snap = snapshot_timestamp(df)
+# --- CANLI İSTANBUL SAATİ ENTEGRASYONU ---
+import datetime as dt
+import pytz
+
+tz = pytz.timezone('Europe/Istanbul')
+su_an = dt.datetime.now(tz)
+canli_saat = su_an.replace(tzinfo=None, minute=0, second=0, microsecond=0)
+
+if canli_saat in df.index:
+    snap = canli_saat
+else:
+    # Veri setinde o saat yoksa (veri sınırları aşılmışsa), son saati getir
+    snap = df.index[-1] 
+# ------------------------------------------
 prosumer_users, consumer_users = build_user_maps(df)
 
 sidebar_login(prosumer_users, consumer_users)
